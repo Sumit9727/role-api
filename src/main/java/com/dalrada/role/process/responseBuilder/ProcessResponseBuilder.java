@@ -27,7 +27,7 @@ public class ProcessResponseBuilder {
 		responseBody.setRoleId(intgResponse.getRespBody().getRoleId());
 		responseBody.setRoleName(intgResponse.getRespBody().getRoleName());
 		processResponse.setRespBody(responseBody);
-		logger.debug("enter into buildResponse method");
+		logger.debug("exit into buildResponse method");
 		return processResponse;
 	}
 	

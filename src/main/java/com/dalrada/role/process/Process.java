@@ -2,6 +2,10 @@ package com.dalrada.role.process;
 
 import java.util.List;
 
+import com.dalrada.role.process.beans.ProcessRequest;
+import com.dalrada.role.process.beans.ProcessResponse;
+import com.dalrada.role.process.requestBuilder.ProcessRequestBuilder;
+import com.dalrada.role.process.responseBuilder.ProcessResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +16,6 @@ import com.dalrada.role.integration.beans.IntgRequest;
 import com.dalrada.role.integration.beans.IntgResponse;
 import com.dalrada.role.integration.exception.BusinessException;
 import com.dalrada.role.integration.exception.SystemException;
-import com.dalrada.role.process.beans.ProcessRequest;
-import com.dalrada.role.process.beans.ProcessResponse;
-import com.dalrada.role.process.requestBuilder.ProcessRequestBuilder;
-import com.dalrada.role.process.responseBuilder.ProcessResponseBuilder;
 
 @Component
 public class Process {
@@ -32,46 +32,45 @@ public class Process {
 		Intg = intg;
 		this.responseBuilder = responseBuilder;
 	}
-	public ProcessResponse getUserById(Long userId) throws BusinessException, SystemException {
-		logger.debug("enter into getUserById method");
-		IntgResponse intgResponse = Intg.getUserById(userId);
+	public ProcessResponse getRoleById(Long userId) throws BusinessException, SystemException {
+		logger.debug("enter into getRoleById method");
+		IntgResponse intgResponse = Intg.getRoleById(userId);
 		ProcessResponse processResponse = responseBuilder.buildResponse(intgResponse);
-		logger.debug("exit from getUserById method");
+		logger.debug("exit from getRoleById method");
 		return processResponse;
 	}
-	public List<ProcessResponse> getAllUser() throws BusinessException, SystemException {
-		logger.debug("enter into getAllUsers method");
-		List<IntgResponse> intgRespList = Intg.getAllUsers();
+	public List<ProcessResponse> getAllRole() throws BusinessException, SystemException {
+		logger.debug("enter into getAllRoles method");
+		List<IntgResponse> intgRespList = Intg.getAllRoles();
 		List<ProcessResponse> processRespList = responseBuilder.buildResponse(intgRespList);
-		logger.debug("exit from getAllUsers method");
+		logger.debug("exit from getAllRoles method");
 		return processRespList;
 	}
 
 
-	public ProcessResponse createUser(ProcessRequest processRequest) throws BusinessException, SystemException {
-		logger.debug("enter into createUser method");
+	public ProcessResponse createRole(ProcessRequest processRequest) throws BusinessException, SystemException {
+		logger.debug("enter into createRole method");
 		IntgRequest intgRequest = requestBuilder.buildRequest(processRequest);
-		IntgResponse intgResponse = Intg.createUser(intgRequest);
+		IntgResponse intgResponse = Intg.createRole(intgRequest);
 		ProcessResponse processResponse = responseBuilder.buildResponse(intgResponse);
-		logger.debug("exit from createUser method");
+		logger.debug("exit from createRole method");
 		return processResponse;
 	}
 
-	public ProcessResponse editUser(ProcessRequest processRequest) throws BusinessException, SystemException {
-		logger.debug("enter into editUser method");
+	public ProcessResponse editRole(ProcessRequest processRequest) throws BusinessException, SystemException {
+		logger.debug("enter into editRole method");
 		IntgRequest intgRequest = requestBuilder.buildRequest(processRequest);
-		IntgResponse intgResponse = Intg.editUser(intgRequest);
+		IntgResponse intgResponse = Intg.editRole(intgRequest);
 		ProcessResponse processResponse = responseBuilder.buildResponse(intgResponse);
-		logger.debug("exit from editUser method");
+		logger.debug("exit from editRole method");
 		return processResponse;
 	}
 
-    public ProcessResponse changeStatus(ProcessRequest processRequest) throws BusinessException, SystemException {
-		logger.debug("enter into editUser method");
-		IntgRequest intgRequest = requestBuilder.buildRequest(processRequest);
-		IntgResponse intgResponse = Intg.changeStatus(intgRequest);
+    public ProcessResponse changeStatus(long roleId,int status) throws BusinessException, SystemException {
+		logger.debug("enter into changeStatus method");
+		IntgResponse intgResponse = Intg.changeStatus(roleId,status);
 		ProcessResponse processResponse = responseBuilder.buildResponse(intgResponse);
-		logger.debug("exit from editUser method");
+		logger.debug("exit from changeStatus method");
 		return processResponse;
     }
 }

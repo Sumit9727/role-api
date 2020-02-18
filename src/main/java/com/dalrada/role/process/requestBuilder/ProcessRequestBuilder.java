@@ -13,6 +13,7 @@ public class ProcessRequestBuilder {
 	public IntgRequest buildRequest(ProcessRequest processRequest) {
 		logger.debug("enter into buildRequest method");
 		IntgRequest intgRequest  = new IntgRequest();
+		intgRequest.setRoleId(processRequest.getRoleId());
 		intgRequest.setRoleName(processRequest.getRoleName());
 		intgRequest.setStatus(processRequest.getStatus());
 		intgRequest.setCreatedBy(processRequest.getCreatedBy());

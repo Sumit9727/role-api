@@ -2,12 +2,7 @@ package com.dalrada.role.integration;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import java.util.stream.Collectors;
 import com.dalrada.role.integration.beans.IntgRequest;
 import com.dalrada.role.integration.beans.IntgResponse;
 import com.dalrada.role.integration.entity.RoleEntity;
@@ -16,6 +11,10 @@ import com.dalrada.role.integration.exception.SystemException;
 import com.dalrada.role.integration.repository.RoleRepository;
 import com.dalrada.role.integration.requestBuilder.IntgRequestBuilder;
 import com.dalrada.role.integration.responseBuilder.IntgResponseBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class Integration {
@@ -27,100 +26,81 @@ public class Integration {
 	@Autowired
 	public Integration(IntgRequestBuilder requestBuilder, RoleRepository repository,
 					   IntgResponseBuilder responseBuilder) {
-		super();
 		this.requestBuilder = requestBuilder;
 		this.repository = repository;
 		this.responseBuilder = responseBuilder;
 	}
 
-	public IntgResponse getUserById(Long userId) throws BusinessException, SystemException {
-		logger.debug("enter into getUserById method");
+	public IntgResponse getRoleById(Long roleId) throws BusinessException, SystemException {
+		logger.debug("enter into getRoleById method");
 		RoleEntity role;
 		try {
-			role = repository.findById(userId).get();
+			role = repository.findById(roleId).get();
 		} catch (RuntimeException e) {
-			logger.error("Exception occured due to " ,e);
+			logger.error("Exception occurred due to " ,e);
 			throw new SystemException("","");	
 		}
 		if(role != null) {
 			IntgResponse intgResponse = responseBuilder.buildResponse(role);
-			logger.debug("exit from getUserById method");
+			logger.debug("exit from getRoleById method");
 			return intgResponse;
 		}
 		else
-			throw new BusinessException("505","data not persent");
+			throw new BusinessException("505","data not present");
 	}
 
-	public List<IntgResponse> getAllUsers() throws BusinessException, SystemException {
-		logger.debug("enter into getAllUsers method");
-		List<RoleEntity> userList;
+	public List<IntgResponse> getAllRoles() throws BusinessException, SystemException {
+		logger.debug("enter into getAllRoles method");
+		List<RoleEntity> roleList;
 		try {
-			userList = repository.findAll();
+			roleList = repository.findAll();
 		} catch (RuntimeException e) {
-			logger.error("Exception occured  " ,e);
+			logger.error("Exception occurred  " ,e);
 			throw new SystemException("","");	
 		}
 		List<IntgResponse> responseList = new ArrayList<IntgResponse>();
-		if(userList != null) {
-			userList.forEach(user ->{
-				IntgResponse intgResponse = responseBuilder.buildResponse(user);
+		if(roleList != null) {
+			roleList.forEach(role ->{
+				IntgResponse intgResponse = responseBuilder.buildResponse(role);
 				responseList.add(intgResponse);
 			});
-			logger.debug("exit from getAllUsers method");
-			return responseList;
+			logger.debug("exit from getAllRoles method");
+			List<IntgResponse> activeResponseList = responseList.stream()
+					.filter(response -> response.getRespBody().getStatus()==1)
+					.collect(Collectors.toList());
+			return activeResponseList;
 		}
 		else
-			throw new BusinessException("505","data not persent");
+			throw new BusinessException("505","data not present");
 	}
-	public IntgResponse createUser(IntgRequest intgRequest) throws BusinessException, SystemException {
-		logger.debug("enter into createUser method");
-		RoleEntity user = requestBuilder.buildRequest(intgRequest);
+	public IntgResponse createRole(IntgRequest intgRequest) throws BusinessException, SystemException {
+		logger.debug("enter into createRole method");
+		RoleEntity role = requestBuilder.buildRequest(intgRequest);
 		RoleEntity entity;
 		try {
-			entity = repository.save(user);
+			entity = repository.save(role);
 		} catch (RuntimeException e) {
-			logger.error("Exception occured  " ,e);
+			logger.error("Exception occurred  " ,e);
 			throw new SystemException("","");
 		}
 		if(entity != null) {
-			IntgResponse intgResponse = responseBuilder.buildResponse(user);
-			logger.debug("exit from getAllUsers method");
+			IntgResponse intgResponse = responseBuilder.buildResponse(role);
+			logger.debug("exit from getAllRoles method");
 			return intgResponse;
 		}
 		else
 			throw new BusinessException("505","data not saved");
 	}
 
-	public IntgResponse editUser(IntgRequest intgRequest) throws BusinessException, SystemException {
-		logger.debug("enter into editUser method");
-		RoleEntity user = null ;
-		user = requestBuilder.buildRequest(intgRequest);
-		String roleName = user.getRoleName();
-		Integer status= user.getStatus() ;
-		String createdBy = user.getCreatedBy() ;
-		Long roleId = user.getRoleId();
+	public IntgResponse editRole(IntgRequest intgRequest) throws BusinessException, SystemException {
+		logger.debug("enter into editRole method");
+		RoleEntity role = null ;
+		RoleEntity entity = null;
+		Long roleId = intgRequest.getRoleId();
 		try {
-			repository.UpdateRole(roleName , roleId );
-		} catch (RuntimeException e) {
-			logger.error("Exception occured  " ,e);
-			throw new SystemException("","");
-		}
-		catch (Exception e) {
-			throw new BusinessException("","");
-		}
-		IntgResponse intgResponse = responseBuilder.buildResponse("200","user record successfully updated");
-		logger.debug("exit from editUser method");
-		return intgResponse;
-	}
-
-	public IntgResponse changeStatus(IntgRequest intgRequest) throws BusinessException, SystemException {
-		logger.debug("enter into changeStatus method");
-		RoleEntity user = null ;
-		user = requestBuilder.buildRequest(intgRequest);
-		Integer status= user.getStatus();
-		Long roleId = user.getRoleId();
-		try {
-			repository.ChangeStatus(status , roleId );
+			entity = repository.findById(roleId).get();
+			role = requestBuilder.buildRequest(entity,intgRequest);
+			entity =repository.save(role);
 		} catch (RuntimeException e) {
 			logger.error("Exception occurred  " ,e);
 			throw new SystemException("","");
@@ -128,8 +108,36 @@ public class Integration {
 		catch (Exception e) {
 			throw new BusinessException("","");
 		}
-		IntgResponse intgResponse = responseBuilder.buildResponse("200","user record successfully updated");
-		logger.debug("exit from changeStatus method");
-		return intgResponse;
+		if(entity != null) {
+			IntgResponse intgResponse = responseBuilder.buildResponse(role);
+			logger.debug("exit from editRole method");
+			return intgResponse;
+		}
+		else
+			throw new BusinessException("505","data not updated");
 	}
+
+	public IntgResponse changeStatus(long roleId,int status) throws BusinessException, SystemException {
+		logger.debug("enter into changeStatus method");
+		RoleEntity entity = null;
+		try {
+			RoleEntity role = repository.findById(roleId).get();
+			role.setStatus(status);
+			entity =repository.save(role);
+		} catch (RuntimeException e) {
+			logger.error("Exception occurred  " ,e);
+			throw new SystemException("","");
+		}
+		catch (Exception e) {
+			throw new BusinessException("","");
+		}
+		if(entity != null) {
+			IntgResponse intgResponse = responseBuilder.buildResponse(entity);
+			logger.debug("exit from changeStatus method");
+			return intgResponse;
+		}
+		else
+			throw new BusinessException("505","Status not updated");
+	}
+
 }

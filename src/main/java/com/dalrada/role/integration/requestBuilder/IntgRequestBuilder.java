@@ -25,4 +25,12 @@ public class IntgRequestBuilder {
 		return entity;
 	}
 
+	public RoleEntity buildRequest(RoleEntity entity,IntgRequest intgRequest){
+		logger.debug("enter into editRole method");
+		entity.setRoleName(intgRequest.getRoleName());
+		logger.debug("exit from editRole method");
+		return entity;
+	}
+
+
 }

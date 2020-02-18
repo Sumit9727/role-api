@@ -2,11 +2,6 @@ package com.dalrada.role.resource;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.dalrada.role.integration.exception.BusinessException;
 import com.dalrada.role.integration.exception.SystemException;
 import com.dalrada.role.process.Process;
@@ -17,10 +12,16 @@ import com.dalrada.role.resource.beans.ResourceResponse;
 import com.dalrada.role.resource.requestBuilder.ResourceRequestBuilder;
 import com.dalrada.role.resource.responseBuilder.ResourceResponseBuilder;
 import com.dalrada.role.resource.validator.RequestValidator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping(path = "/dalrada/role")
+@Api(value = "Role Service API")
 public class Resource {
 	
 	ResourceRequestBuilder requestBuilder;
@@ -38,50 +39,53 @@ public class Resource {
 		this.requestValidator = requestValidator;
 	}
 
-	@GetMapping("getRole")
-	public ResourceResponse getUserById(Long userId) throws BusinessException, SystemException {
-		logger.debug("enter into getUserById method");
-		requestValidator.validate(userId);
-		ProcessResponse processResponse = process.getUserById(userId);
+	@GetMapping("getRole/{roleId}")
+	@ApiOperation(value = "Get Role By Id API")
+	public ResourceResponse getUserById(@PathVariable Long roleId) throws BusinessException, SystemException {
+		logger.debug("enter into getRoleById method");
+		requestValidator.validate(roleId);
+		ProcessResponse processResponse = process.getRoleById(roleId);
 		ResourceResponse resourceResponse = responsebuilder.buildResponse(processResponse);
-		logger.debug("exit from getUserById method");
+		logger.debug("exit from getRoleById method");
 		return resourceResponse;	
 	}
 	
 	@GetMapping("getAllRole")
-	public List<ResourceResponse> getAllUsers() throws BusinessException, SystemException {
-		logger.debug("enter into getAllUsers method");
-		List<ProcessResponse> processRespList = process.getAllUser();
+	@ApiOperation(value = "Get All Role API")
+	public List<ResourceResponse> getAllRoles() throws BusinessException, SystemException {
+		logger.debug("enter into getAllRoles method");
+		List<ProcessResponse> processRespList = process.getAllRole();
 		List<ResourceResponse> resourceRespList = responsebuilder.buildResponse(processRespList);
-		logger.debug("exit from getAllUsers method");
+		logger.debug("exit from getAllRoles method");
 		return resourceRespList;	
 	}
 	@PostMapping("createRole")
-	public ResourceResponse createUser(@RequestBody ResourceRequest resourceRequest) throws BusinessException, SystemException {
-		logger.debug("enter into createUser method");
+	@ApiOperation(value = "Role Creating API")
+	public ResourceResponse createRole(@RequestBody ResourceRequest resourceRequest) throws BusinessException, SystemException {
+		logger.debug("enter into createRole method");
 		requestValidator.validate(resourceRequest);
 		ProcessRequest processRequest = requestBuilder.buildRequest(resourceRequest);
-		ProcessResponse processResponse = process.createUser(processRequest);
+		ProcessResponse processResponse = process.createRole(processRequest);
 		ResourceResponse resourceResponse = responsebuilder.buildResponse(processResponse);
-		logger.debug("exit from createUsers method");
+		logger.debug("exit from createRoles method");
 		return resourceResponse;	
 	}
 	@PostMapping("editRole")
+	@ApiOperation(value = "Role Editing API")
 	public ResourceResponse editUser(@RequestBody ResourceRequest resourceRequest) throws BusinessException, SystemException {
-		logger.debug("enter into editUser method");
+		logger.debug("enter into editRole method");
 		requestValidator.validate(resourceRequest);
 		ProcessRequest processRequest = requestBuilder.buildRequest(resourceRequest);
-		ProcessResponse processResponse = process.editUser(processRequest);
+		ProcessResponse processResponse = process.editRole(processRequest);
 		ResourceResponse resourceResponse = responsebuilder.buildResponse(processResponse);
-		logger.debug("exit from editUser method");
+		logger.debug("exit from editRole method");
 		return resourceResponse;
 	}
-	@PostMapping("changeStatus")
-	public ResourceResponse changeStatus(@RequestBody ResourceRequest resourceRequest)  throws BusinessException, SystemException {
+	@PostMapping("changeStatus/{roleId}/{status}")
+	@ApiOperation(value = "Status Creating API")
+	public ResourceResponse changeStatus(@PathVariable long roleId, @PathVariable int status)  throws BusinessException, SystemException {
 		logger.debug("enter into changeStatus method");
-		requestValidator.validate(resourceRequest);
-		ProcessRequest processRequest = requestBuilder.buildRequest(resourceRequest);
-		ProcessResponse processResponse = process.changeStatus(processRequest);
+		ProcessResponse processResponse = process.changeStatus(roleId,status);
 		ResourceResponse resourceResponse = responsebuilder.buildResponse(processResponse);
 		logger.debug("exit from editUser method");
 		return resourceResponse;
@@ -89,7 +93,9 @@ public class Resource {
 
 
 	@GetMapping("healthStatus")
+	@ApiOperation(value = "Health Checking API")
 	public String getHealth() {
+
 		return "Service is up and running";
 	}
 

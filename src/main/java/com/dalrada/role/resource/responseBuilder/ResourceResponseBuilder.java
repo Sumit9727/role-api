@@ -3,11 +3,11 @@ package com.dalrada.role.resource.responseBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dalrada.role.process.beans.ProcessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.dalrada.role.process.beans.ProcessResponse;
 import com.dalrada.role.resource.beans.ResourceResponseBody;
 import com.dalrada.role.resource.beans.ResourceResponse;
 
@@ -15,35 +15,35 @@ import com.dalrada.role.resource.beans.ResourceResponse;
 public class ResourceResponseBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(ResourceResponseBuilder.class);
 	
-	public ResourceResponse buildResponse(ProcessResponse intgResponse) {
+	public ResourceResponse buildResponse(ProcessResponse processResponse) {
 		logger.debug("enter into buildResponse method");
 		ResourceResponse resourceResponse = new ResourceResponse();
-		resourceResponse.setResponseCode(intgResponse.getResponseCode());
-		resourceResponse.setResponseMsg(intgResponse.getResponseMsg());
+		resourceResponse.setResponseCode(processResponse.getResponseCode());
+		resourceResponse.setResponseMsg(processResponse.getResponseMsg());
 		ResourceResponseBody responseBody = new ResourceResponseBody();
-		responseBody.setCreatedBy(intgResponse.getRespBody().getCreatedBy());
-		responseBody.setCreatedDate(intgResponse.getRespBody().getCreatedDate());
-		responseBody.setStatus(intgResponse.getRespBody().getStatus());
-		responseBody.setRoleId(intgResponse.getRespBody().getRoleId());
-		responseBody.setRoleName(intgResponse.getRespBody().getRoleName());
+		responseBody.setCreatedBy(processResponse.getRespBody().getCreatedBy());
+		responseBody.setCreatedDate(processResponse.getRespBody().getCreatedDate());
+		responseBody.setStatus(processResponse.getRespBody().getStatus());
+		responseBody.setRoleId(processResponse.getRespBody().getRoleId());
+		responseBody.setRoleName(processResponse.getRespBody().getRoleName());
 		resourceResponse.setRespBody(responseBody);
 		logger.debug("exit from buildResponse method");
 		return resourceResponse;
 	}
 	
-	public List<ResourceResponse> buildResponse(List<ProcessResponse> intgRespList) {
+	public List<ResourceResponse> buildResponse(List<ProcessResponse> processResponseListRespList) {
 		logger.debug("enter into buildResponse method");
 		List<ResourceResponse> processRespList = new ArrayList<ResourceResponse>();
-		intgRespList.forEach(intgResponse ->{
+		processResponseListRespList.forEach(processResponse ->{
 			ResourceResponse resourceResponse = new ResourceResponse();
-			resourceResponse.setResponseCode(intgResponse.getResponseCode());
-			resourceResponse.setResponseMsg(intgResponse.getResponseMsg());
+			resourceResponse.setResponseCode(processResponse.getResponseCode());
+			resourceResponse.setResponseMsg(processResponse.getResponseMsg());
 			ResourceResponseBody responseBody = new ResourceResponseBody();
-			responseBody.setCreatedBy(intgResponse.getRespBody().getCreatedBy());
-			responseBody.setCreatedDate(intgResponse.getRespBody().getCreatedDate());
-			responseBody.setStatus(intgResponse.getRespBody().getStatus());
-			responseBody.setRoleId(intgResponse.getRespBody().getRoleId());
-			responseBody.setRoleName(intgResponse.getRespBody().getRoleName());
+			responseBody.setCreatedBy(processResponse.getRespBody().getCreatedBy());
+			responseBody.setCreatedDate(processResponse.getRespBody().getCreatedDate());
+			responseBody.setStatus(processResponse.getRespBody().getStatus());
+			responseBody.setRoleId(processResponse.getRespBody().getRoleId());
+			responseBody.setRoleName(processResponse.getRespBody().getRoleName());
 			resourceResponse.setRespBody(responseBody);
 			processRespList.add(resourceResponse);
 		});

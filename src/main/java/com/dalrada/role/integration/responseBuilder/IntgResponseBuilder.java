@@ -14,7 +14,7 @@ public class IntgResponseBuilder {
 		logger.debug("enter into buildResponse method");
 		IntgResponse response = new IntgResponse();
 		response.setResponseCode("200");
-		response.setResponseMsg("successfull");
+		response.setResponseMsg("successful");
 		response.setRespBody(entity);
 		logger.debug("exit from buildResponse method");
 		return response;		

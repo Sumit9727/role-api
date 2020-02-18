@@ -1,10 +1,10 @@
 package com.dalrada.role.resource.requestBuilder;
 
+import com.dalrada.role.process.beans.ProcessRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.dalrada.role.process.beans.ProcessRequest;
 import com.dalrada.role.resource.beans.ResourceRequest;
 
 @Component
@@ -13,6 +13,7 @@ public class ResourceRequestBuilder {
 	public ProcessRequest buildRequest(ResourceRequest resourceRequest) {
 		logger.debug("enter into buildRequest method");
 		ProcessRequest processRequest  = new ProcessRequest();
+		processRequest.setRoleId(resourceRequest.getRoleId());
 		processRequest.setRoleName(resourceRequest.getRoleName());
 		processRequest.setStatus(resourceRequest.getStatus());
 		processRequest.setCreatedBy(resourceRequest.getCreatedBy());

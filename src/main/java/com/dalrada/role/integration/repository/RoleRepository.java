@@ -1,8 +1,6 @@
 package com.dalrada.role.integration.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.dalrada.role.integration.entity.RoleEntity;
@@ -19,17 +17,15 @@ public interface RoleRepository extends JpaRepository<RoleEntity, Long>{
 	@Param(value="roleId")Long roleId
 	);*/
 
-	@Query("UPDATE role SET role_name =:roleName WHERE role_id=:roleId")
-    void UpdateRole(
-           @Param("roleName") String roleName,
-           @Param("roleId") Long roleId
-    );
+/*    @Modifying(clearAutomatically = true)
+	@Query("UPDATE dalrada.role r SET r.role_name =?1 WHERE r.role_id=?2")
+    Long UpdateRole(String roleName,Long roleId);*/
 
-    @Query("UPDATE role SET status =:status WHERE role_id=:roleId")
-    void ChangeStatus(
+/*    @Modifying(clearAutomatically = true)
+    @Query("UPDATE role r SET r.status =:status WHERE r.role_id=:roleId")
+    Long ChangeStatus(
             @Param("status") Integer status,
             @Param("roleId") Long roleId
-    );
-	
-	
+    );*/
+
 }
